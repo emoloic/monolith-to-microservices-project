@@ -1,0 +1,49 @@
+name: Continuous Integration
+on:
+  push:
+    branches:
+      - 'main'
+      - 'dev'
+
+env:
+  DOCKERHUB_USERNAME: ${{secrets.DOCKERHUB_USERNAME}}
+  DOCKERHUB_PASSWORD: ${{secrets.DOCKERHUB_PASSWORD}}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build images
+        run: docker-compose -f docker-compose-build.yaml build --parallel
+
+      - name: Tagging reverseproxy image
+        run: docker tag reverseproxy ${{ env.DOCKERHUB_USERNAME }}/reverseproxy:v1
+
+      - name: Tagging udagram-api-user image
+        run: docker tag udagram-api-user ${{ env.DOCKERHUB_USERNAME }}/udagram-api-user:v1
+
+      - name: Tagging udagram-api-feed image
+        run: docker tag udagram-api-feed ${{ env.DOCKERHUB_USERNAME }}/udagram-api-feed:v1
+      
+      - name: Tagging udagram-frontend image
+        run: docker tag udagram-frontend ${{ env.DOCKERHUB_USERNAME }}/udagram-frontend:v1
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+            username: ${{ env.DOCKERHUB_USERNAME }}
+            password: ${{ env.DOCKERHUB_PASSWORD }}
+
+      - name: Pushing reverseproxy image
+        run: docker push ${{ env.DOCKERHUB_USERNAME }}/reverseproxy:v1
+
+      - name: Pushing udagram-api-user image
+        run: docker push ${{ env.DOCKERHUB_USERNAME }}/udagram-api-user:v1
+
+      - name: Pushing udagram-api-feed image
+        run: docker push ${{ env.DOCKERHUB_USERNAME }}/udagram-api-feed:v1
+      
+      - name: Pushing udagram-frontend image
+        run: docker push ${{ env.DOCKERHUB_USERNAME }}/udagram-frontend:v1
