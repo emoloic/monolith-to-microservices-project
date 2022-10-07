@@ -28,7 +28,7 @@ jobs:
         run: docker tag udagram-api-feed ${{ env.DOCKERHUB_USERNAME }}/udagram-api-feed:v1
       
       - name: Tagging udagram-frontend image
-        run: docker tag udagram-frontend ${{ env.DOCKERHUB_USERNAME }}/udagram-frontend:v2
+        run: docker tag udagram-frontend ${{ env.DOCKERHUB_USERNAME }}/udagram-frontend:v1
 
       - name: Login to Docker Hub
         uses: docker/login-action@v2
@@ -46,4 +46,4 @@ jobs:
         run: docker push ${{ env.DOCKERHUB_USERNAME }}/udagram-api-feed:v1
       
       - name: Pushing udagram-frontend image
-        run: docker push ${{ env.DOCKERHUB_USERNAME }}/udagram-frontend:v2
+        run: docker push ${{ env.DOCKERHUB_USERNAME }}/udagram-frontend:v1
